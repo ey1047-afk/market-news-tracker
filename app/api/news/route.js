@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// --- 아주 가벼운 RSS(XML) 파서: 외부 라이브러리 없이 정규식으로 <item> 블록만 추출 ---
 function decodeEntities(str) {
   return str
     .replace(/&amp;/g, "&")
@@ -37,6 +36,8 @@ function parseRssXml(xml, keyword) {
   return items;
 }
 
+// 키워드 1개를 받아 그 키워드에 대한 뉴스만 수집·파싱해서 반환합니다.
+// 클라이언트가 키워드마다 이 API를 순서대로 호출하면서 진행 상황을 화면에 표시합니다.
 export async function POST(req) {
   let body;
   try {
@@ -45,60 +46,31 @@ export async function POST(req) {
     return NextResponse.json({ error: "요청 본문이 올바르지 않습니다." }, { status: 400 });
   }
 
-  const keywords = Array.isArray(body.keywords)
-    ? body.keywords.map((k) => String(k).trim()).filter(Boolean)
-    : [];
-
-  if (keywords.length === 0) {
-    return NextResponse.json({ error: "keywords 배열이 필요합니다." }, { status: 400 });
+  const keyword = typeof body.keyword === "string" ? body.keyword.trim() : "";
+  if (!keyword) {
+    return NextResponse.json({ error: "keyword가 필요합니다." }, { status: 400 });
   }
 
-  const limitedKeywords = keywords.slice(0, 10); // 남용 방지: 최대 10개
-  const resultsByKeyword = {};
-  let rawSample = "";
+  const url = `https://news.google.com/rss/search?q=${encodeURIComponent(
+    keyword
+  )}&hl=ko&gl=KR&ceid=KR:ko`;
 
-  for (const kw of limitedKeywords) {
-    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(
-      kw
-    )}&hl=ko&gl=KR&ceid=KR:ko`;
-
-    try {
-      const res = await fetch(url, {
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; MarketNewsTracker/1.0)" },
-        cache: "no-store",
-      });
-      const xml = await res.text();
-      if (!rawSample) rawSample = xml.slice(0, 1500);
-      resultsByKeyword[kw] = parseRssXml(xml, kw).slice(0, 20);
-    } catch (e) {
-      resultsByKeyword[kw] = [];
-    }
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; MarketNewsTracker/1.0)" },
+      cache: "no-store",
+    });
+    const xml = await res.text();
+    const items = parseRssXml(xml, keyword).slice(0, 20);
+    return NextResponse.json({
+      keyword,
+      items,
+      rawSample: xml.slice(0, 1500),
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { error: e.message || "크롤링 중 오류가 발생했습니다." },
+      { status: 502 }
+    );
   }
-
-  const allItems = Object.values(resultsByKeyword).flat();
-
-  // 헤드라인 텍스트 안에 각 키워드가 등장한 횟수를 집계 (= "언급 순위")
-  const mentionCounts = {};
-  for (const kw of limitedKeywords) {
-    mentionCounts[kw] = allItems.filter((item) =>
-      item.title.toLowerCase().includes(kw.toLowerCase())
-    ).length;
-  }
-
-  const keywordCounts = {};
-  for (const kw of limitedKeywords) {
-    keywordCounts[kw] = (resultsByKeyword[kw] || []).length;
-  }
-
-  const headlines = allItems
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-    .slice(0, 50);
-
-  return NextResponse.json({
-    collectedAt: new Date().toISOString(),
-    keywordCounts,
-    mentionCounts,
-    headlines,
-    rawSample,
-  });
 }

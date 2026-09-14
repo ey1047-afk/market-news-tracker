@@ -1,0 +1,187 @@
+:root {
+  --primary: #0066cc;
+  --primary-focus: #0071e3;
+  --ink: #1d1d1f;
+  --ink-muted-80: #333333;
+  --ink-muted-48: #7a7a7a;
+  --divider-soft: #f0f0f0;
+  --hairline: #e0e0e0;
+  --canvas: #ffffff;
+  --canvas-parchment: #f5f5f7;
+  --surface-pearl: #fafafc;
+  --on-primary: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+h1 {
+  font-family: "SF Pro Display", -apple-system, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.374px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+}
+
+p.sub {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-muted-80);
+  margin: 0 0 40px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.224px;
+  color: var(--ink-muted-80);
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  padding: 17px 20px;
+  background: var(--canvas);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  font-size: 17px;
+  font-family: inherit;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  resize: vertical;
+}
+textarea:focus { outline: none; border-color: var(--primary-focus); }
+
+.hint { font-size: 12px; color: var(--ink-muted-48); margin-top: 6px; }
+
+button.run-btn {
+  margin-top: 20px;
+  padding: 11px 28px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 9999px;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.374px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+button.run-btn:active { transform: scale(0.95); }
+button.run-btn:disabled { background: #b9b9bb; cursor: default; transform: none; }
+
+.error-box {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: #fff2f2;
+  border: 1px solid #ffd1d1;
+  border-radius: 11px;
+  color: #c0392b;
+  font-size: 14px;
+  line-height: 1.43;
+}
+
+.card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  padding: 24px;
+}
+.card h2 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.224px;
+  color: var(--ink-muted-80);
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--divider-soft);
+  font-size: 14px;
+}
+.progress-row:last-child { border-bottom: none; }
+.progress-status { color: var(--ink-muted-48); }
+.progress-status.ok { color: #1a7f37; }
+.progress-status.fail { color: #c0392b; }
+
+.timestamp { font-size: 12px; color: var(--ink-muted-48); margin-bottom: 0; }
+
+/* --- 대시보드 레이아웃 --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.dashboard-grid .full-span { grid-column: 1 / -1; }
+@media (max-width: 700px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+.stat-row { display: flex; gap: 32px; flex-wrap: wrap; }
+.stat-item .stat-value {
+  font-family: "SF Pro Display", -apple-system, sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.374px;
+}
+.stat-item .stat-label { font-size: 12px; color: var(--ink-muted-48); margin-top: 2px; }
+
+.bar-row { margin-bottom: 12px; font-size: 13px; }
+.bar-row .bar-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.bar-track { background: var(--divider-soft); border-radius: 6px; height: 8px; overflow: hidden; }
+.bar-fill { background: var(--primary); height: 100%; border-radius: 6px; }
+
+.chip-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  background: var(--surface-pearl);
+  border: 1px solid var(--divider-soft);
+  color: var(--primary);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-weight: 600;
+}
+
+ul, ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+li { margin-bottom: 6px; }
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+small { color: var(--ink-muted-48); }
+
+pre {
+  background: var(--canvas-parchment);
+  padding: 16px;
+  overflow-x: auto;
+  max-height: 280px;
+  font-size: 11px;
+  border-radius: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--ink-muted-80);
+}
