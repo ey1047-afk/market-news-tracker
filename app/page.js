@@ -132,7 +132,7 @@ export default function Home() {
       { cls: "t-muted", text: `... 총 ${allItems.length}건 정제 완료` },
       { cls: "t-accent", text: `→ [${keywords.length}/${keywords.length}] 키워드 빈도 분석 상위 15개 추출` },
       { cls: "t-muted", text: `⋮ 파싱된 데이터를 근거로 대시보드 생성 중입니다...` },
-      { cls: "t-success", text: `✓ 파싱이 완료되었습니다. ${new Date().toLocaleString("ko-KR")}` },
+      { cls: "t-success", text: `✓ 검색이 완료되었습니다. ${new Date().toLocaleString("ko-KR")}` },
     ]);
 
     setLoading(false);
@@ -164,10 +164,10 @@ export default function Home() {
 
   return (
     <main>
-      <h1>시장동향 실시간 크롤링·파싱</h1>
+      <h1>뉴스 인사이트 대시보드</h1>
       <p className="sub">
-        Google News RSS를 실시간으로 검색해 키워드별 언급량과 헤드라인을 대시보드로
-        정리해 보여줍니다. 검색 키워드는 아래에서 직접 수정할 수 있습니다.
+        실시간 뉴스 기사를 수집하여 키워드별 언급량과 주요 이슈를 요약해 드립니다.
+        모니터링할 키워드를 아래에 입력해 주세요.
       </p>
 
       <label htmlFor="keywords">검색 키워드 (쉼표로 구분, 최대 {MAX_KEYWORDS}개)</label>
@@ -182,7 +182,7 @@ export default function Home() {
       </div>
 
       <button className="run-btn" onClick={runCrawl} disabled={loading}>
-        {loading ? "크롤링 중..." : "▶ 시장동향 크롤링 실행"}
+        {loading ? "검색 중..." : "▶ 뉴스 검색"}
       </button>
       <button className="save-btn" onClick={saveKeywords}>
         💾 키워드 저장
@@ -209,7 +209,7 @@ export default function Home() {
 
       {data && !loading && (
         <>
-          <p className="crawl-done-label">✓ 파싱이 완료되었습니다</p>
+          <p className="crawl-done-label">✓ 검색이 완료되었습니다</p>
           <button className="dashboard-btn" onClick={() => setDashboardVisible(true)}>
             🖥 대시보드 보러가기
           </button>
@@ -321,8 +321,8 @@ export default function Home() {
                     {h.title}
                   </a>
                   <div className="headline-meta">{h.source || "출처 미상"} · {h.pubDate}</div>
-                  <a className="headline-url" href={h.link} target="_blank" rel="noreferrer">
-                    {h.link}
+                  <a className="headline-link-btn" href={h.link} target="_blank" rel="noreferrer">
+                    기사 링크 →
                   </a>
                 </div>
               ))}

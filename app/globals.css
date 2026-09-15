@@ -396,3 +396,16 @@ pre {
   text-decoration: none;
 }
 .headline-item-wide .headline-url:hover { text-decoration: underline; }
+.headline-item-wide .headline-link-btn {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 14px;
+  background: var(--surface-pearl);
+  border: 1px solid var(--divider-soft);
+  border-radius: 9999px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.headline-item-wide .headline-link-btn:hover { background: var(--divider-soft); text-decoration: none; }
