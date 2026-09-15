@@ -12,15 +12,27 @@ function extractTrending(headlines) {
     "속보", "단독", "포토", "영상", "오늘", "이슈", "기자", "뉴스", "보도",
     "오전", "오후", "종합", "특집", "인터뷰", "분석", "전망", "현장", "화제",
   ]);
+  // 도메인 형태로 제목 끝에 붙는 흔한 조각들(예: yna.co.kr, news.daum.net)이
+  // 키워드로 잘못 집계되지 않도록 걸러냅니다.
+  const domainFragments = new Set([
+    "kr", "co", "com", "net", "org", "io", "www", "daum", "yna", "news", "naver",
+  ]);
   const freq = {};
   headlines.forEach((h) => {
-    const tokens = h.title
+    // Google News 제목은 보통 "실제 제목 - 언론사"(또는 도메인) 형식이라,
+    // 마지막 " - " 뒤에 붙는 출처 표기는 제목 분석에서 제외합니다.
+    const lastDash = h.title.lastIndexOf(" - ");
+    const cleanTitle = lastDash > 0 ? h.title.slice(0, lastDash) : h.title;
+
+    const tokens = cleanTitle
       .replace(/[\[\]\(\)|"'“”‘’·,.!?~]/g, " ")
       .split(/\s+/)
       .filter(Boolean);
     tokens.forEach((t) => {
       const clean = t.trim();
-      if (clean.length < 2 || stopwords.has(clean)) return;
+      if (clean.length < 2) return;
+      if (stopwords.has(clean)) return;
+      if (domainFragments.has(clean.toLowerCase())) return;
       freq[clean] = (freq[clean] || 0) + 1;
     });
   });
