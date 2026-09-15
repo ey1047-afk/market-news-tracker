@@ -185,3 +185,152 @@ pre {
   word-break: break-all;
   color: var(--ink-muted-80);
 }
+
+/* --- 터미널 스타일 진행 로그 --- */
+.terminal {
+  background: #0d1117;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 24px;
+}
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #161b22;
+}
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; }
+.terminal-dot.yellow { background: #ffbd2e; }
+.terminal-dot.green { background: #27c93f; }
+.terminal-title { color: #8b949e; font-size: 12px; margin-left: 8px; font-family: ui-monospace, monospace; }
+.terminal-body {
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #c9d1d9;
+  max-height: 280px;
+  overflow-y: auto;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+.terminal-body .t-key { color: #7ee787; }
+.terminal-body .t-tag { color: #ff7b72; }
+.terminal-body .t-muted { color: #8b949e; }
+.terminal-body .t-accent { color: #ffa657; }
+.terminal-body .t-success { color: #7ee787; font-weight: 600; }
+
+.crawl-done-label {
+  text-align: center;
+  color: #1a7f37;
+  font-weight: 700;
+  font-size: 15px;
+  margin: 20px 0 4px;
+}
+.dashboard-btn {
+  display: block;
+  margin: 12px auto 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #7c5cff, #5b8def);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dashboard-btn:active { transform: scale(0.97); }
+.crawl-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-muted-48);
+  margin-top: 8px;
+}
+
+/* --- 대시보드: 수집 현황 카드 --- */
+.stat-card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+}
+.stat-card { background: #eef6ff; border-radius: 16px; padding: 20px; text-align: center; }
+.stat-card .num { font-size: 28px; font-weight: 700; color: var(--ink); font-family: "SF Pro Display", sans-serif; }
+.stat-card .lbl { font-size: 13px; color: #5b6572; margin-top: 4px; }
+
+/* --- 지금 핫한 브랜드/키워드 랭킹 --- */
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff7ed;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.rank-badge { font-size: 20px; width: 24px; text-align: center; }
+.rank-name { flex: 0 0 100px; font-weight: 600; }
+.rank-bar-track { flex: 1; height: 10px; background: #ffe4c4; border-radius: 6px; overflow: hidden; }
+.rank-bar-fill { height: 100%; background: linear-gradient(90deg, #ff9f43, #feca57); border-radius: 6px; }
+.rank-count { font-weight: 700; color: #e07b1a; width: 50px; text-align: right; }
+
+/* --- 파싱 검증 (원본 vs 추출) --- */
+.verify-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+@media (max-width: 700px) { .verify-pair { grid-template-columns: 1fr; } }
+.verify-raw {
+  background: #0d1117;
+  color: #c9d1d9;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+.verify-raw .label { color: #ffa657; display: block; margin-bottom: 6px; font-weight: 700; }
+.verify-raw .tag { color: #ff7b72; }
+.verify-parsed {
+  background: #f0fdf9;
+  border: 1px solid #b9f0e0;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+}
+.verify-parsed .label { color: #0f9d78; display: block; margin-bottom: 6px; font-weight: 700; }
+
+/* --- 시장동향 키워드 (그라데이션 막대) --- */
+.trend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.trend-label { flex: 0 0 90px; font-size: 13px; }
+.trend-track { flex: 1; height: 22px; border-radius: 6px; background: #f1f0fb; overflow: hidden; }
+.trend-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #14b8a6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 24px;
+}
+
+/* --- 수집된 헤드라인 --- */
+.headline-scroll { max-height: 380px; overflow-y: auto; }
+.headline-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--divider-soft); }
+.headline-item:last-child { border-bottom: none; }
+.headline-tag {
+  flex: 0 0 auto;
+  background: #eef2ff;
+  color: #4c51bf;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  height: fit-content;
+  white-space: nowrap;
+}
+.headline-main a { font-weight: 600; color: var(--ink); text-decoration: none; }
+.headline-main a:hover { color: var(--primary); text-decoration: underline; }
+.headline-main small { display: block; color: var(--ink-muted-48); margin-top: 2px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
