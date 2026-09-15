@@ -160,7 +160,6 @@ export default function Home() {
     : [];
   const maxMention = sortedMentions.length ? sortedMentions[0][1] : 1;
   const maxTrend = data && data.trending.length ? data.trending[0][1] : 1;
-  const verifyItems = data ? data.headlines.slice(0, 3) : [];
 
   return (
     <main>
@@ -251,29 +250,6 @@ export default function Home() {
                   <div className="rank-bar-fill" style={{ width: `${Math.max(6, (v / maxMention) * 100)}%` }} />
                 </div>
                 <span className="rank-count">{v}회</span>
-              </div>
-            ))}
-          </section>
-
-          <section className="card">
-            <h2>🧾 파싱 검증 · 원본 → 추출</h2>
-            <p style={{ fontSize: 13, color: "var(--ink-muted-48)", marginTop: -6, marginBottom: 14 }}>
-              서버가 받은 실제 원본과, 거기서 뽑아낸 값을 나란히 보여줍니다.
-            </p>
-            {verifyItems.map((item, i) => (
-              <div className="verify-pair" key={i}>
-                <div className="verify-raw">
-                  <span className="label">RAW · 원본 XML</span>
-                  <span className="tag">&lt;title&gt;</span>
-                  {item.title} - {item.source}
-                  <span className="tag">&lt;/title&gt;</span>
-                </div>
-                <div className="verify-parsed">
-                  <span className="label">PARSED · 추출 결과</span>
-                  제목 {item.title}
-                  <br />
-                  언론사 {item.source || "출처 미상"}
-                </div>
               </div>
             ))}
           </section>
