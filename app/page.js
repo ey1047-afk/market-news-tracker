@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const DEFAULT_KEYWORDS = "언더웨어, 속옷 브랜드, 이너웨어, 언더웨어 신상";
 const MAX_KEYWORDS = 30;
 const RANK_BADGES = ["🥇", "🥈", "🥉"];
+const STORAGE_KEY = "market-news-tracker-keywords";
 
 function extractTrending(headlines) {
   const stopwords = new Set([
@@ -35,6 +36,19 @@ export default function Home() {
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
   const [dashboardVisible, setDashboardVisible] = useState(false);
+  const [savedMsg, setSavedMsg] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved) setKeywordsText(saved);
+  }, []);
+
+  const saveKeywords = () => {
+    window.localStorage.setItem(STORAGE_KEY, keywordsText);
+    setSavedMsg(true);
+    setTimeout(() => setSavedMsg(false), 1800);
+  };
 
   const pushLog = (lines) => setLogLines((prev) => [...prev, ...lines]);
 
@@ -43,6 +57,7 @@ export default function Home() {
     setData(null);
     setDashboardVisible(false);
     setLogLines([]);
+    setActiveTab("all");
 
     const keywords = keywordsText
       .split(",")
@@ -120,8 +135,9 @@ export default function Home() {
       keywordCounts,
       mentionCounts,
       trending,
-      headlines: allItems.slice(0, 50),
+      headlines: allItems,
       totalHeadlines: allItems.length,
+      usedKeywords: keywords,
     });
   };
 
@@ -156,6 +172,10 @@ export default function Home() {
       <button className="run-btn" onClick={runCrawl} disabled={loading}>
         {loading ? "크롤링 중..." : "▶ 시장동향 크롤링 실행"}
       </button>
+      <button className="save-btn" onClick={saveKeywords}>
+        💾 키워드 저장
+      </button>
+      {savedMsg && <span className="saved-msg">저장됐습니다 · 다음에 다시 열어도 유지됩니다</span>}
 
       {error && <div className="error-box" style={{ marginTop: 16 }}>{error}</div>}
 
@@ -246,36 +266,55 @@ export default function Home() {
             ))}
           </section>
 
-          <div className="grid-2">
-            <section className="card">
-              <h2>📈 시장동향 키워드</h2>
-              {data.trending.map(([word, count]) => (
-                <div className="trend-row" key={word}>
-                  <span className="trend-label">{word}</span>
-                  <div className="trend-track">
-                    <div className="trend-fill" style={{ width: `${Math.max(8, (count / maxTrend) * 100)}%` }}>
-                      {count}
-                    </div>
+          <section className="card">
+            <h2>📈 시장동향 키워드</h2>
+            {data.trending.map(([word, count]) => (
+              <div className="trend-row" key={word}>
+                <span className="trend-label">{word}</span>
+                <div className="trend-track">
+                  <div className="trend-fill" style={{ width: `${Math.max(8, (count / maxTrend) * 100)}%` }}>
+                    {count}
                   </div>
                 </div>
-              ))}
-            </section>
-
-            <section className="card">
-              <h2>🗞 수집된 헤드라인 ({data.totalHeadlines}건)</h2>
-              <div className="headline-scroll">
-                {data.headlines.map((h, i) => (
-                  <div className="headline-item" key={i}>
-                    <span className="headline-tag">{h.keyword}</span>
-                    <div className="headline-main">
-                      <a href={h.link} target="_blank" rel="noreferrer">{h.title}</a>
-                      <small>{h.source || "출처 미상"} · {h.pubDate}</small>
-                    </div>
-                  </div>
-                ))}
               </div>
-            </section>
-          </div>
+            ))}
+          </section>
+
+          <section className="card">
+            <h2>🗞 수집된 헤드라인 ({data.totalHeadlines}건)</h2>
+            <div className="tab-bar">
+              <button
+                className={`tab-btn ${activeTab === "all" ? "active" : ""}`}
+                onClick={() => setActiveTab("all")}
+              >
+                전체 ({data.totalHeadlines})
+              </button>
+              {data.usedKeywords.map((kw) => (
+                <button
+                  key={kw}
+                  className={`tab-btn ${activeTab === kw ? "active" : ""}`}
+                  onClick={() => setActiveTab(kw)}
+                >
+                  {kw} ({data.keywordCounts[kw] || 0})
+                </button>
+              ))}
+            </div>
+
+            {data.headlines
+              .filter((h) => activeTab === "all" || h.keyword === activeTab)
+              .map((h, i) => (
+                <div className="headline-item-wide" key={i}>
+                  <span className="headline-tag">{h.keyword}</span>
+                  <a className="headline-title" href={h.link} target="_blank" rel="noreferrer">
+                    {h.title}
+                  </a>
+                  <div className="headline-meta">{h.source || "출처 미상"} · {h.pubDate}</div>
+                  <a className="headline-url" href={h.link} target="_blank" rel="noreferrer">
+                    {h.link}
+                  </a>
+                </div>
+              ))}
+          </section>
         </div>
       )}
     </main>
